@@ -123,7 +123,7 @@ import java.awt.image.BufferedImage;
          }
      }
 
-    public double[] RGBtoHSV (double red, double green, double blue){
+    public static double[] RGBtoHSV (double red, double green, double blue){
 
         double h = 0;
         double[] HSV = new double[3];

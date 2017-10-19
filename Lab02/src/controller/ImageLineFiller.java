@@ -39,7 +39,8 @@ public class ImageLineFiller extends AbstractTransformer {
 	private int hueThreshold = 1;
 	private int saturationThreshold = 2;
 	private int valueThreshold = 3;
-	
+	public SeedFill seedFiller;
+
 	/**
 	 * Creates an ImageLineFiller with default parameters.
 	 * Default pixel change color is black.
@@ -77,9 +78,11 @@ public class ImageLineFiller extends AbstractTransformer {
 					//On autorise la modification des pixels
 					currentImage.beginPixelUpdate();
 
+					seedFiller = new SeedFill(currentImage,fillColor,borderColor,hueThreshold,saturationThreshold,valueThreshold);
+
 					//On choisis le bon remplissage en fonction du choix de l'utilisateur
-					if(floodFill) floodFill(pt,currentImage.getPixel(pt.x,pt.y));
-					else Boundaryfill(pt,currentImage.getPixel(pt.x,pt.y));
+					if(floodFill) seedFiller.floodFill(pt,currentImage.getPixel(pt.x,pt.y));
+					else seedFiller.Boundaryfill(pt,currentImage.getPixel(pt.x,pt.y));
 
 
 					currentImage.endPixelUpdate();											 	
@@ -91,144 +94,7 @@ public class ImageLineFiller extends AbstractTransformer {
 		return false;
 	}
 
-	/*  Algorithme de remplissage par région interieur avec 4 voisins
-	*	Prend en entré le point a la position du clique de la souris et la couleur de ce point
-	*	Fonctionnement :
-	*	On change la couleur de tous les points qui ont la même couleurs que le point d'origine et qui sont
-	*	connecté entre eux par un des axes (NORD, SUD, EST, OUEST).
-	*	L'algorithme est implémenté sous forme itérative a l'aide d'une stack de points.
-	* */
-	private void floodFill(Point pActuel, Pixel colorcible){
 
-		// On créer la stack de points et on ajoute le point a la position du clique de la souris dans la stack
-		Stack<Point> p = new Stack<Point>();
-		p.push(pActuel);
-
-			// on va itérer au travers de la stack tant qu'elle n'est pas vide
-			while (!p.empty()) {
-
-				// On récupère le point qui se trouve au-dessus de la stack et on set la couleur du point correspondant dans l'image
-				pActuel = p.pop();
-				currentImage.setPixel(pActuel.x, pActuel.y, fillColor);
-
-				// Pour chaque axe (NORD, SUD, EST, OUEST) on regarde si le point suivant est de la même couleur que le point original (ou point cible).
-				// On vérifie aussi si le point n'est pas déjà de la bonne couleur pour ne pas le set plusieurs fois pour rien
-				// Si les critères sont remplis alors le point est ensuite ajouté sur la stack pour être traité..
-
-				if(pActuel.y + 1 < currentImage.getImageHeight()){
-					if (colorComparator(currentImage.getPixel(pActuel.x, pActuel.y + 1),colorcible) && currentImage.getPixel(pActuel.x, pActuel.y + 1).getARGB() != fillColor.getARGB()) {
-						p.push(new Point(pActuel.x, pActuel.y + 1));
-					}
-				}
-				if(0 <= pActuel.y - 1) {
-					if (colorComparator(currentImage.getPixel(pActuel.x, pActuel.y - 1), colorcible) && currentImage.getPixel(pActuel.x, pActuel.y - 1).getARGB() != fillColor.getARGB()) {
-						p.push(new Point(pActuel.x, pActuel.y - 1));
-					}
-				}
-				if(pActuel.x + 1 < currentImage.getImageWidth()) {
-					if (colorComparator(currentImage.getPixel(pActuel.x + 1, pActuel.y), colorcible) && currentImage.getPixel(pActuel.x + 1, pActuel.y).getARGB() != fillColor.getARGB()) {
-						p.push(new Point(pActuel.x + 1, pActuel.y));
-					}
-				}
-				if(0 <= pActuel.x - 1) {
-					if (colorComparator(currentImage.getPixel(pActuel.x - 1, pActuel.y), colorcible) && currentImage.getPixel(pActuel.x - 1, pActuel.y).getARGB() != fillColor.getARGB()) {
-						p.push(new Point(pActuel.x - 1, pActuel.y));
-					}
-				}
-
-
-			}
-
-
-	}
-
-	/*  Algorithme de remplissage par bordure extérieure avec 4 voisins
-	*	Prend en entré le point à la position du clique de la souris et la couleur de ce point
-	*	Fonctionnement :
-	*	On change la couleur de tous les points connecté entre eux par un des axes (NORD, SUD, EST, OUEST)
-	*	qui ont une couleur différente de la couleur à remplir et aussi qui ont une couleur différente
-	*	de la couleur de bordure.
-	*	L'algorithme est implémenté sous forme itérative a l'aide d'une stack de points.
-	* */
-	private void Boundaryfill (Point pActuel, Pixel colorcible){
-
-		// On créer la stack de points et on ajoute le point a la position du clique de la souris dans la stack
-		Stack<Point> p = new Stack<Point>();
-		p.push(pActuel);
-
-			// on va itérer au travers de la stack tant qu'elle n'est pas vide
-			while (!p.empty()) {
-				pActuel = p.pop();
-				currentImage.setPixel(pActuel.x, pActuel.y, fillColor);
-
-				// Pour chaque axe (NORD, SUD, EST, OUEST) on regarde si le point suivant est de couleur différente de la couleur de remplissage
-				// et de la couleur de la bordure.
-				// Si les critères sont remplis alors le point est ensuite ajouté sur la stack pour être traité.
-
-				if(pActuel.y + 1 < currentImage.getImageHeight()){
-					if (!colorComparator(currentImage.getPixel(pActuel.x, pActuel.y + 1),fillColor) && !colorComparator(currentImage.getPixel(pActuel.x, pActuel.y + 1),borderColor)) {
-						p.push(new Point(pActuel.x, pActuel.y + 1));
-					}
-				}
-				if(0 <= pActuel.y - 1) {
-					if (!colorComparator(currentImage.getPixel(pActuel.x, pActuel.y - 1), fillColor) && !colorComparator(currentImage.getPixel(pActuel.x, pActuel.y - 1), borderColor)) {
-						p.push(new Point(pActuel.x, pActuel.y - 1));
-					}
-				}
-				if(pActuel.x + 1 < currentImage.getImageWidth()) {
-					if (!colorComparator(currentImage.getPixel(pActuel.x + 1, pActuel.y), fillColor) && !colorComparator(currentImage.getPixel(pActuel.x + 1, pActuel.y), borderColor)) {
-						p.push(new Point(pActuel.x + 1, pActuel.y));
-					}
-				}
-				if(0 <= pActuel.x - 1) {
-					if (!colorComparator(currentImage.getPixel(pActuel.x - 1, pActuel.y), fillColor) && !colorComparator(currentImage.getPixel(pActuel.x - 1, pActuel.y), borderColor)) {
-						p.push(new Point(pActuel.x - 1, pActuel.y));
-					}
-				}
-
-			}
-
-
-	}
-
-	/*	Fonction de comparaison des couleurs avec seuil en format HSV
-	*	Prend en entré les deux points à comparer
-	* 	Fonctionnement :
-	* 	On transforme les deux couleurs au format HSV puis on regarde si la première couleur
-	* 	est dans le range de la deuxième couleur avec + ou - le seuil définit par les sliders pour chaque composantes
-	* 	On retourne le résultat de la comparaison sous la forme d'un boolean
-	* */
-	private boolean colorComparator(Pixel color1, Pixel color2){
-
-		if (color1 == null || color2 == null) return false;
-
-		boolean H = false;
-		boolean S = false;
-		boolean V = false;
-		double[] color1HSV = new double[3];
-		double[] color2HSV = new double[3];
-
-		//On transforme au format HSV
-		color1HSV = RGBtoHSV(color1.getRed(),color1.getGreen(),color1.getBlue());
-		color2HSV = RGBtoHSV(color2.getRed(),color2.getGreen(),color2.getBlue());
-
-		//Pour les trois composantes on regarde si la première couleur est dans + ou - le range de la deuxième couleur
-		if (((color1HSV[0]/2) + hueThreshold) >= (color2HSV[0]/2) && ((color1HSV[0]/2) - hueThreshold) <= (color2HSV[0]/2)){
-			H = true;
-		} else H = false;
-
-		if (((color1HSV[1]*255) + saturationThreshold) >= (color2HSV[1]*255) && ((color1HSV[1]*255) - saturationThreshold) <= (color2HSV[1]*255)){
-			S = true;
-		} else S = false;
-
-		if (((color1HSV[2]*255) + valueThreshold >= (color2HSV[2]*255)) && ((color1HSV[2]*255) - valueThreshold) <= (color2HSV[2]*255)){
-			V = true;
-		} else V = false;
-
-		//On retourne true seulement si les trois composantes sont dans le range
-		return (H && S && V);
-
-	}
 
 
 
@@ -264,30 +130,7 @@ public class ImageLineFiller extends AbstractTransformer {
 		//      adding it to the stack (to reduce memory needs and increase efficiency).
 	}
 
-	public double[] RGBtoHSV (double red, double green, double blue){
 
-		double h = 0;
-		double[] HSV = new double[3];
-		double r = red/(double)255;
-		double g = green/(double)255;
-		double b = blue/(double)255;
-		double minimum = Math.min(Math.min(r,g),b);
-		double maximum = Math.max(Math.max(r,g),b);
-		double c = maximum - minimum;
-
-		if (c == 0) h = 0;
-		else if (maximum == r) h = ((g - b)/c)%6;
-		else if (maximum == g) h = ((b - r)/c) + 2;
-		else if (maximum == b) h = ((r - g)/c) + 4;
-
-		h = 60 * h;
-
-		HSV[0] = h;
-		if(c == 0)HSV[1] = 0;
-		else HSV[1] = c/maximum;
-		HSV[2] = maximum;
-		return HSV;
-	}
 	
 	/**
 	 * @return
