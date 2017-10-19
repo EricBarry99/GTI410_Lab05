@@ -101,22 +101,22 @@ public class SeedFill {
             // Si les critères sont remplis alors le point est ensuite ajouté sur la stack pour être traité.
 
             if(pActuel.y + 1 < currentImage.getImageHeight()){
-                if (!colorComparator(currentImage.getPixel(pActuel.x, pActuel.y + 1),fillColor) && !colorComparator(currentImage.getPixel(pActuel.x, pActuel.y + 1),borderColor)) {
+                if (currentImage.getPixel(pActuel.x, pActuel.y + 1).getARGB() != fillColor.getARGB() && !colorComparator(currentImage.getPixel(pActuel.x, pActuel.y + 1), borderColor)) {
                     p.push(new Point(pActuel.x, pActuel.y + 1));
                 }
             }
             if(0 <= pActuel.y - 1) {
-                if (!colorComparator(currentImage.getPixel(pActuel.x, pActuel.y - 1), fillColor) && !colorComparator(currentImage.getPixel(pActuel.x, pActuel.y - 1), borderColor)) {
+                if (currentImage.getPixel(pActuel.x, pActuel.y - 1).getARGB() != fillColor.getARGB() && !colorComparator(currentImage.getPixel(pActuel.x, pActuel.y - 1), borderColor)) {
                     p.push(new Point(pActuel.x, pActuel.y - 1));
                 }
             }
             if(pActuel.x + 1 < currentImage.getImageWidth()) {
-                if (!colorComparator(currentImage.getPixel(pActuel.x + 1, pActuel.y), fillColor) && !colorComparator(currentImage.getPixel(pActuel.x + 1, pActuel.y), borderColor)) {
+                if (currentImage.getPixel(pActuel.x + 1, pActuel.y ).getARGB() != fillColor.getARGB() && !colorComparator(currentImage.getPixel(pActuel.x + 1, pActuel.y), borderColor)) {
                     p.push(new Point(pActuel.x + 1, pActuel.y));
                 }
             }
             if(0 <= pActuel.x - 1) {
-                if (!colorComparator(currentImage.getPixel(pActuel.x - 1, pActuel.y), fillColor) && !colorComparator(currentImage.getPixel(pActuel.x - 1, pActuel.y), borderColor)) {
+                if (currentImage.getPixel(pActuel.x - 1, pActuel.y).getARGB() != fillColor.getARGB() && !colorComparator(currentImage.getPixel(pActuel.x - 1, pActuel.y), borderColor)) {
                     p.push(new Point(pActuel.x - 1, pActuel.y));
                 }
             }
