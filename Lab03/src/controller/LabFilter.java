@@ -2,11 +2,14 @@ package controller;
 
 import model.ImageDouble;
 import model.ImageX;
+import model.KernelModel;
 import model.PixelDouble;
+import view.FilterKernelPanel;
 
 public class LabFilter extends Filter {
 
-    public double filterMatrix[][] = null;
+    public float filterMatrix[][] = null;
+
 
     /**
      * Default constructor.
@@ -16,8 +19,12 @@ public class LabFilter extends Filter {
     public LabFilter(PaddingStrategy paddingStrategy,
                          ImageConversionStrategy conversionStrategy) {
         super(paddingStrategy, conversionStrategy);
-        filterMatrix = new double[3][3];
+        filterMatrix = new float[3][3];
+     //   FilterKernelPanel._filterTypeComboBox
+
+                //KernelModel.FILTER_TYPE_ARRAY
     }
+
 
     public void updateMatrixAt(Coordinates _coordinates, float _value){
         this.filterMatrix[_coordinates.getColumn()-1][_coordinates.getRow()-1] = _value;

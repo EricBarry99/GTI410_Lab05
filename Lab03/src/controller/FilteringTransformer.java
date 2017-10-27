@@ -86,6 +86,12 @@ public class FilteringTransformer extends AbstractTransformer{
 	 */
 	public void setBorder(String string) {
 		System.out.println(string);
+
+
+
+		if(string.equals("copy")){
+
+		}
 	}
 
 	/**
