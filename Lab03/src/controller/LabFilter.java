@@ -95,10 +95,14 @@ public class LabFilter extends Filter {
                     }
                 }
 
+
                 newPixel.setRed(resultRed);
                 newPixel.setGreen(resultGreen);
                 newPixel.setBlue(resultBlue);
 
+                resultRed = 0;
+                resultGreen = 0;
+                resultBlue = 0;
                 //*******************************
                 // Alpha - Untouched in this filter
                 newPixel.setAlpha(getPaddingStrategy().pixelAt(image, x,y).getAlpha());

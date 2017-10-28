@@ -108,18 +108,7 @@ public class FilterKernelPanel extends JPanel implements ObserverIF {
         _handlingBorderComboBox.addActionListener(
                 new ActionListener() {
                     public void actionPerformed(ActionEvent ae) {
-                        // @TODO: Passer l'image en param a setBorder()
-                        // @TODO: adapter setBorder pour prendre l'image en parametre
-
-//                        for (Component item: _setUpPanel.getComponents()) {
-//                            System.out.print(item.list());
-//                        }
-
-                   //     _setUpPanel.list();
-                  //      _setUpPanel;
-
                         FilterKernelPanel.this.ti.getTheFilter().setBorder((String) _handlingBorderComboBox.getSelectedItem());
-//                        FilterKernelPanel.this.ti.
                     }
                 });
 
@@ -189,9 +178,9 @@ public class FilterKernelPanel extends JPanel implements ObserverIF {
             break;
             case 3: // 4-Neighbour Laplacian
             {
-                float meanKernel[][] = {{3, 2, 3},
-                        {4, 5, 6},
-                        {7, 8, 9}};
+                float meanKernel[][] = {{0, -1, 0},
+                        {-1, 4, -1},
+                        {0, -1, 0}};
                 _kernelPanel.setKernelValues(meanKernel);
             }
             break;

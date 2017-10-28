@@ -35,6 +35,7 @@ import controller.LabFilter;
  */
 public class FilteringTransformer extends AbstractTransformer{
 
+	BorderManager borderManager;
 	private LabFilter filter = new LabFilter(new PaddingZeroStrategy(), new ImageClampStrategy());
 
 
@@ -64,7 +65,14 @@ public class FilteringTransformer extends AbstractTransformer{
 				ImageDouble filteredImage = filter.filterToImageDouble(currentImage);
 				ImageX filteredDisplayableImage = filter.getImageConversionStrategy().convert(filteredImage);
 				currentImage.beginPixelUpdate();
-				
+
+				//@TODO: appel des trucs de bordure avec une classe specialisee
+				borderManager = new BorderManager(filteredImage);
+
+				ImageDouble imageBordee = borderManager.ManageBorder("copy");
+				borderManager.displayImageBordee(imageBordee);
+
+
 				for (int i = 0; i < currentImage.getImageWidth(); ++i) {
 					for (int j = 0; j < currentImage.getImageHeight(); ++j) {
 						currentImage.setPixel(i, j, filteredDisplayableImage.getPixelInt(i, j));
