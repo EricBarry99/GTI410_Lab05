@@ -241,6 +241,10 @@ public class FilterKernelPanel extends JPanel implements ObserverIF {
             }
             break;
             case 0: // Custom
+                float meanKernel[][] = {{1, 1, 1},
+                        {1, 1, 1},
+                        {1, 1, 1}};
+                _kernelPanel.setKernelValues(meanKernel);
             default: {
                 // Do nothing
             }
