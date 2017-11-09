@@ -19,8 +19,8 @@ import model.*;
 /**
  * <p>Title: ImageClampStrategy</p>
  * <p>Description: Image-related strategy</p>
- * <p>Copyright: Copyright (c) 2004 Colin Barré-Brisebois, Eric Paquette</p>
- * <p>Company: ETS - École de Technologie Supérieure</p>
+ * <p>Copyright: Copyright (c) 2004 Colin Barrï¿½-Brisebois, Eric Paquette</p>
+ * <p>Company: ETS - ï¿½cole de Technologie Supï¿½rieure</p>
  * @author unascribed
  * @version $Revision: 1.8 $
  */
@@ -33,7 +33,6 @@ public class ImageClampStrategy extends ImageConversionStrategy {
 		int imageHeight = image.getImageHeight();
 		ImageX newImage = new ImageX(0, 0, imageWidth, imageHeight);
 		PixelDouble curPixelDouble = null;
-
 		newImage.beginPixelUpdate();
 		for (int x = 0; x < imageWidth; x++) {
 			for (int y = 0; y < imageHeight; y++) {

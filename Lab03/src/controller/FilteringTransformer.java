@@ -73,7 +73,7 @@ public class FilteringTransformer extends AbstractTransformer{
 				borderManager = new BorderManager(filteredImage);
 
 				ImageDouble imageBordee = borderManager.ManageBorder("copy");
-				borderManager.displayImageBordee(imageBordee);
+				//borderManager.displayImageBordee(imageBordee);
 
 
 				for (int i = 0; i < currentImage.getImageWidth(); ++i) {
@@ -109,6 +109,11 @@ public class FilteringTransformer extends AbstractTransformer{
 	 * @param string
 	 */
 	public void setClamp(String string) {
+
 		System.out.println(string);
+		if(string.equals("Abs and normalize to 255")){
+			filter.setImageConversionStrategy(new ImageClampAbsTo255Strategy() );
+		}
+
 	}
 }

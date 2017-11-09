@@ -54,9 +54,9 @@ public class BorderManager {
             int height = this.imageDouble.getImageHeight()+2;
             ImageDouble imageBordee = new ImageDouble(width, height);
 
-            System.out.println("------------------------");
-            displayImageBordee(this.imageDouble);
-            System.out.println("------------------------");
+            //System.out.println("------------------------");
+            //displayImageBordee(this.imageDouble);
+            //System.out.println("------------------------");
 
             for (int i = 0; i < width; i++) {
                 for (int j = 0; j < height; j++) {
@@ -67,8 +67,8 @@ public class BorderManager {
                     }
                 }
             }
-            System.out.println("------------------------");
-            displayImageBordee(imageBordee);
+            //System.out.println("------------------------");
+            //displayImageBordee(imageBordee);
 
             for (int i = 0; i < width; i++) {
                 for (int j = 0; j < height; j++) {
@@ -100,8 +100,8 @@ public class BorderManager {
                         }
                     }
                 }
-                System.out.println("------------------------");
-                displayImageBordee(imageBordee);
+                //System.out.println("------------------------");
+                //displayImageBordee(imageBordee);
             }
 
 

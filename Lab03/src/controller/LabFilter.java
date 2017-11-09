@@ -31,9 +31,9 @@ public class LabFilter extends Filter {
     }
 
     public void showMatrix(){
-        System.out.println("[" + this.filterMatrix[0][0] + "] [" + this.filterMatrix[1][0] + "] [" + this.filterMatrix[2][0] + ']');
-        System.out.println("[" + this.filterMatrix[0][1] + "] [" + this.filterMatrix[1][1] + "] [" + this.filterMatrix[2][1] + ']');
-        System.out.println("[" + this.filterMatrix[0][2] + "] [" + this.filterMatrix[1][2] + "] [" + this.filterMatrix[2][2] + ']');
+        //System.out.println("[" + this.filterMatrix[0][0] + "] [" + this.filterMatrix[1][0] + "] [" + this.filterMatrix[2][0] + ']');
+        //System.out.println("[" + this.filterMatrix[0][1] + "] [" + this.filterMatrix[1][1] + "] [" + this.filterMatrix[2][1] + ']');
+        //System.out.println("[" + this.filterMatrix[0][2] + "] [" + this.filterMatrix[1][2] + "] [" + this.filterMatrix[2][2] + ']');
     }
 
     /**
