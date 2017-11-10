@@ -9,6 +9,8 @@ import view.FilterKernelPanel;
 public class LabFilter extends Filter {
 
     public float filterMatrix[][] = null;
+    public String border = "copy";
+    BorderManager borderManager;
 
 
     /**
@@ -22,17 +24,21 @@ public class LabFilter extends Filter {
         filterMatrix = new float[3][3];
     }
 
+    public void setBorder(String border){
+        this.border = border;
+    }
 
     public void updateMatrixAt(Coordinates _coordinates, float _value){
         this.filterMatrix[_coordinates.getColumn()-1][_coordinates.getRow()-1] = _value;
     }
 
-
     /**
      * Filters an ImageX and returns a ImageDouble.
      */
     public ImageDouble filterToImageDouble(ImageX image) {
-        return filter(conversionStrategy.convert(image));
+        borderManager = new BorderManager(conversionStrategy.convert(image));
+        ImageDouble imageBordee = borderManager.ManageBorder(this.border);
+        return filter(imageBordee);
     }
 
     /**

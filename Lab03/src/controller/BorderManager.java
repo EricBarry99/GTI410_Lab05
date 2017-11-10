@@ -17,7 +17,7 @@ public class BorderManager {
     public ImageDouble ManageBorder(String borderType) {
 
         // si l'algorithme par copie est choisi
-        if (borderType.equals("copy")) {
+        if (borderType.equals("copy") || borderType.equals("Copy")) {
 
             int width = this.imageDouble.getImageWidth()+2;
             int height = this.imageDouble.getImageHeight()+2;
@@ -67,7 +67,9 @@ public class BorderManager {
             }
             return imageBordee;
         }
-        return null;
+        else{
+            return this.imageDouble;
+        }
     }
 
 

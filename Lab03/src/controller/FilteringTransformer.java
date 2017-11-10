@@ -23,7 +23,6 @@ import model.Shape;
 
 import controller.LabFilter;
 
-
 /**
  * 
  * <p>Title: FilteringTransformer</p>
@@ -35,9 +34,7 @@ import controller.LabFilter;
  */
 public class FilteringTransformer extends AbstractTransformer{
 
-	private String border = "";
-
-	BorderManager borderManager;
+	private String border = "0";
 	private LabFilter filter = new LabFilter(new PaddingZeroStrategy(), new ImageClampStrategy());
 
 	/**
@@ -63,12 +60,9 @@ public class FilteringTransformer extends AbstractTransformer{
 				ImageX filteredDisplayableImage = filter.getImageConversionStrategy().convert(filteredImage);
 				currentImage.beginPixelUpdate();
 
-				borderManager = new BorderManager(filteredImage);
-				ImageDouble imageBordee = borderManager.ManageBorder(this.border);
-
 				for (int i = 0; i < currentImage.getImageWidth(); ++i) {
 					for (int j = 0; j < currentImage.getImageHeight(); ++j) {
-						currentImage.setPixel(i, j, filteredDisplayableImage.getPixelInt(i, j));
+						currentImage.setPixel(i, j, filteredDisplayableImage.getPixelInt(i+1, j+1));
 					}
 				}
 				currentImage.endPixelUpdate();
@@ -86,7 +80,7 @@ public class FilteringTransformer extends AbstractTransformer{
 	 * @param string
 	 */
 	public void setBorder(String string) {
-		this.border = string;
+		filter.setBorder(string);
 	}
 
 	/**
