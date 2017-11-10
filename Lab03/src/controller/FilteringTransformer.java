@@ -44,14 +44,7 @@ public class FilteringTransformer extends AbstractTransformer{
 	 * @param _value
 	 */
 	public void updateKernel(Coordinates _coordinates, float _value) {
-		/*
-		System.out.println("[" + (_coordinates.getColumn() - 1) + "]["
-                                   + (_coordinates.getRow() - 1) + "] = " 
-                                   + _value);
-		*/
 		filter.updateMatrixAt(_coordinates, _value);
-		//filter.showMatrix();
-
 	}
 		
 	/**
@@ -69,12 +62,8 @@ public class FilteringTransformer extends AbstractTransformer{
 				ImageX filteredDisplayableImage = filter.getImageConversionStrategy().convert(filteredImage);
 				currentImage.beginPixelUpdate();
 
-				//@TODO: appel des trucs de bordure avec une classe specialisee
 				borderManager = new BorderManager(filteredImage);
-
 				ImageDouble imageBordee = borderManager.ManageBorder("copy");
-				//borderManager.displayImageBordee(imageBordee);
-
 
 				for (int i = 0; i < currentImage.getImageWidth(); ++i) {
 					for (int j = 0; j < currentImage.getImageHeight(); ++j) {
@@ -92,30 +81,16 @@ public class FilteringTransformer extends AbstractTransformer{
 	 */
 	public int getID() { return ID_FILTER; }
 
-	/**
-	 * @param string
-	 */
-	public void setBorder(String string) {
-		System.out.println(string);
-
-
-
-		if(string.equals("copy")){
-
-		}
-	}
 
 	/**
 	 * @param string
 	 */
 	//On choisis la conversion selon le choix de l'utilisateur
 	public void setClamp(String string) {
-
 		System.out.println(string);
 		if(string.equals("Abs and normalize to 255")){
 			filter.setImageConversionStrategy(new ImageClampAbsTo255Strategy() );
 		}
 		else filter.setImageConversionStrategy(new ImageClampStrategy());
-
 	}
 }

@@ -20,9 +20,6 @@ public class LabFilter extends Filter {
                          ImageConversionStrategy conversionStrategy) {
         super(paddingStrategy, conversionStrategy);
         filterMatrix = new float[3][3];
-     //   FilterKernelPanel._filterTypeComboBox
-
-                //KernelModel.FILTER_TYPE_ARRAY
     }
 
 
@@ -30,11 +27,6 @@ public class LabFilter extends Filter {
         this.filterMatrix[_coordinates.getColumn()-1][_coordinates.getRow()-1] = _value;
     }
 
-    public void showMatrix(){
-        //System.out.println("[" + this.filterMatrix[0][0] + "] [" + this.filterMatrix[1][0] + "] [" + this.filterMatrix[2][0] + ']');
-        //System.out.println("[" + this.filterMatrix[0][1] + "] [" + this.filterMatrix[1][1] + "] [" + this.filterMatrix[2][1] + ']');
-        //System.out.println("[" + this.filterMatrix[0][2] + "] [" + this.filterMatrix[1][2] + "] [" + this.filterMatrix[2][2] + ']');
-    }
 
     /**
      * Filters an ImageX and returns a ImageDouble.
@@ -95,7 +87,6 @@ public class LabFilter extends Filter {
                     }
                 }
 
-
                 newPixel.setRed(resultRed);
                 newPixel.setGreen(resultGreen);
                 newPixel.setBlue(resultBlue);
@@ -114,6 +105,4 @@ public class LabFilter extends Filter {
         }
         return newImage;
     }
-
-
 }
