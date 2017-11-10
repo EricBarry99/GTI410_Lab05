@@ -35,9 +35,10 @@ import controller.LabFilter;
  */
 public class FilteringTransformer extends AbstractTransformer{
 
+	private String border = "";
+
 	BorderManager borderManager;
 	private LabFilter filter = new LabFilter(new PaddingZeroStrategy(), new ImageClampStrategy());
-
 
 	/**
 	 * @param _coordinates
@@ -63,7 +64,7 @@ public class FilteringTransformer extends AbstractTransformer{
 				currentImage.beginPixelUpdate();
 
 				borderManager = new BorderManager(filteredImage);
-				ImageDouble imageBordee = borderManager.ManageBorder("copy");
+				ImageDouble imageBordee = borderManager.ManageBorder(this.border);
 
 				for (int i = 0; i < currentImage.getImageWidth(); ++i) {
 					for (int j = 0; j < currentImage.getImageHeight(); ++j) {
@@ -81,16 +82,24 @@ public class FilteringTransformer extends AbstractTransformer{
 	 */
 	public int getID() { return ID_FILTER; }
 
+	/**
+	 * @param string
+	 */
+	public void setBorder(String string) {
+		this.border = string;
+	}
 
 	/**
 	 * @param string
 	 */
 	//On choisis la conversion selon le choix de l'utilisateur
 	public void setClamp(String string) {
+
 		System.out.println(string);
 		if(string.equals("Abs and normalize to 255")){
 			filter.setImageConversionStrategy(new ImageClampAbsTo255Strategy() );
 		}
 		else filter.setImageConversionStrategy(new ImageClampStrategy());
+
 	}
 }
