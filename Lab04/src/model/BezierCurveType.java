@@ -22,7 +22,7 @@ import java.util.List;
  * <p>Title: BezierCurveType</p>
  * <p>Description: ... (CurveType)</p>
  * <p>Copyright: Copyright (c) 2004 Eric Paquette</p>
- * <p>Company: (ÉTS) - École de Technologie Supérieure</p>
+ * <p>Company: (ï¿½TS) - ï¿½cole de Technologie Supï¿½rieure</p>
  * @author Eric Paquette
  * @version $Revision: 1.3 $
  */
@@ -75,10 +75,10 @@ public class BezierCurveType extends CurveType {
 	}
 
 	private List bezierMatrix = 
-		Matrix.buildMatrix4(-1,  3, -3, 1, 
-							 3, -6,  3, 0, 
-							-3,  3,  0, 0, 
-							 1,  0,  0, 0);
+	  Matrix.buildMatrix4(-1,  3, -3, 1,
+			  3, -6,  3, 0,
+			  -3,  3,  0, 0,
+			  1,  0,  0, 0);
 							 
 	private List matrix = bezierMatrix;
 }
