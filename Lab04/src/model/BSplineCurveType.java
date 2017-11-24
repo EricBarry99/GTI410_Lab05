@@ -35,22 +35,28 @@ public class BSplineCurveType extends CurveType {
      * @see model.CurveType#getNumberOfSegments(int)
      */
     public int getNumberOfSegments(int numberOfControlPoints) {
-        return numberOfControlPoints - 1;
+        if (numberOfControlPoints >= 4) {
+            return (numberOfControlPoints - 1) / 3;
+        } else {
+            return 0;
+        }
     }
 
     /* (non-Javadoc)
      * @see model.CurveType#getNumberOfControlPointsPerSegment()
      */
     public int getNumberOfControlPointsPerSegment() {
-        return 2;
+        return 4;
     }
 
     /* (non-Javadoc)
      * @see model.CurveType#getControlPoint(int, int)
      */
-    public ControlPoint getControlPoint(List controlPoints,
-                                        int segmentNumber, int controlPointNumber) {
-        int controlPointIndex = segmentNumber + controlPointNumber;
+    public ControlPoint getControlPoint(
+            List controlPoints,
+            int segmentNumber,
+            int controlPointNumber) {
+        int controlPointIndex = segmentNumber * 3 + controlPointNumber;
         return (ControlPoint)controlPoints.get(controlPointIndex);
     }
 
@@ -58,26 +64,20 @@ public class BSplineCurveType extends CurveType {
      * @see model.CurveType#evalCurveAt(java.util.List, int, double)
      */
     public Point evalCurveAt(List controlPoints, double t) {
-        boolean evalMatrix = true;
-        if (evalMatrix){
-            List tVector = Matrix.buildRowVector2(t, 1);
-            List gVector = Matrix.buildColumnVector2(((ControlPoint)controlPoints.get(0)).getCenter(),
-                    ((ControlPoint)controlPoints.get(1)).getCenter());
+
+            List tVector = Matrix.buildRowVector4(t*t*t, t*t,t,1);
+            List gVector = Matrix.buildColumnVector4(((ControlPoint)controlPoints.get(0)).getCenter(),
+                    ((ControlPoint)controlPoints.get(1)).getCenter(),
+                    ((ControlPoint)controlPoints.get(2)).getCenter(),
+                    ((ControlPoint)controlPoints.get(3)).getCenter());
             Point p = Matrix.eval(tVector, bsplineMatrix, gVector);
-
             return p;
-        } else{
-            Point c0 = ((ControlPoint)(controlPoints.get(0))).getCenter();
-            Point c1 = ((ControlPoint)(controlPoints.get(1))).getCenter();
-
-            int x = (int)Math.round(c0.x+t*(c1.x-c0.x));
-            int y = (int)Math.round(c0.y+t*(c1.y-c0.y));
-            return new Point(x,y);
-        }
     }
 
     private List bsplineMatrix =
-            Matrix.buildMatrix2( -1, 1,
-                    1, 0);
+            Matrix.buildMatrix4((double)-1/6,  (double)3/6, (double)-3/6, (double)1/6,
+                    (double)3/6, (double)-6/6,  (double)3/6, (double)0/6,
+                    (double)-3/6,  (double)0/6,  (double)3/6, (double)0/6,
+                    (double)1/6,  (double)4/6,  (double)1/6, (double)0/6);
 }
 
