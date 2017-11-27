@@ -2,7 +2,9 @@ package model;
 
 import java.awt.Point;
 import java.util.List;
-    /*
+
+
+/*
    This file is part of j2dcg.
    j2dcg is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -71,6 +73,8 @@ public class HermiteCurveType extends CurveType{
                     ((ControlPoint)controlPoints.get(2)).getCenter(),
                     ((ControlPoint)controlPoints.get(3)).getCenter());
             Point p = Matrix.eval(tVector, matrix, gVector);
+
+            // derivee de P1 donne R1, derivee de p4 donne R4
             return p;
         }
 
@@ -79,7 +83,6 @@ public class HermiteCurveType extends CurveType{
                         1, 1,  1, 1,
                         0,  0,  1, 0,
                         3,  2,  1, 0);
-
 
             private List matrix = hermiteMatrix;
     }
