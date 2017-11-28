@@ -106,27 +106,46 @@ public class Curves extends AbstractTransformer implements DocObserver {
 	}
 
 	public Curve checkG1Continuity(Curve curve, int controlPointIndex){
-		// both curves will have the same type
-		// G0 et Tangentes/derivée meme direction
-
-		// on fais la derivee de la formule de la fonction
-		// on applique la fonction sur G1.final et G2.premier
-
-		String curvetype = curve.getCurveType();
-
-		if (curvetype == CurvesModel.BEZIER) {
-			/*
+		/*
 			p4 = p5
-			• 𝑃4 − 𝑃3 = 𝑘(𝑃6 − 𝑃5)
-			• 𝑘 > 0
-			• 𝑃3 , 𝑃4 = 𝑃5 et 𝑃6 colinéaires
-			 */
+			𝑃4 − 𝑃3 = 𝑘(𝑃6 − 𝑃5)
+			𝑘 > 0
+			𝑃3 , 𝑃4 = 𝑃5 et 𝑃6 colinéaires
+		*/
+
+		// on extrait les points a utiliser
+		ControlPoint p3 = (ControlPoint)curve.getShapes().get(controlPointIndex-1);
+		ControlPoint p4 = (ControlPoint)curve.getShapes().get(controlPointIndex);
+		ControlPoint p5 = (ControlPoint)curve.getShapes().get(controlPointIndex+1);
+
+		// calcul des deltas X et Y
+		int v0y = (p4.getCenter().y - p3.getCenter().y);
+		int v0x = (p4.getCenter().x - p3.getCenter().x);
+
+		int v1y = (p5.getCenter().y - p4.getCenter().y);
+		int v1x = (p5.getCenter().x - p4.getCenter().x);
+
+		// calculs des normes des vecteurs V0 (avant pt selectionne) et v1 (apres pt selectionne)
+		double v0 = Math.sqrt(Math.pow(v0y,2) + Math.pow(v0x,2));
+		double v1 = Math.sqrt(Math.pow(v1y,2) + Math.pow(v1x,2));
+
+		double k = v1/v0;
+		((ControlPoint)curve.getShapes().get(controlPointIndex+1)).setCenter(p4.getCenter().x+k*v0x, p4.getCenter().y+k*v0y);
+
+		return curve;
+	}
+
+
+	public Curve checkC1Continuity(Curve curve, int controlPointIndex){
+			/*
+			// comme G1 mais on enleve le K
+				• 𝑃4 − 𝑃3 = 𝑃6 − 𝑃5
+				• 𝑃3 , 𝑃4 = 𝑃5 et 𝑃6 colinéaires et à même distance
+			*/
 			// on extrait les points a utiliser
 			ControlPoint p3 = (ControlPoint)curve.getShapes().get(controlPointIndex-1);
 			ControlPoint p4 = (ControlPoint)curve.getShapes().get(controlPointIndex);
 			ControlPoint p5 = (ControlPoint)curve.getShapes().get(controlPointIndex+1);
-		//	ControlPoint p6 = (ControlPoint)curve.getShapes().get(controlPointIndex+2);
-
 
 			// calcul des deltas X et Y
 			int v0y = (p4.getCenter().y - p3.getCenter().y);
@@ -139,52 +158,8 @@ public class Curves extends AbstractTransformer implements DocObserver {
 			double v0 = Math.sqrt(Math.pow(v0y,2) + Math.pow(v0x,2));
 			double v1 = Math.sqrt(Math.pow(v1y,2) + Math.pow(v1x,2));
 
-			double k = v1/v0;
-
-
-			((ControlPoint)curve.getShapes().get(controlPointIndex+1)).setCenter(p4.getCenter().x+k*v0x, p4.getCenter().y+k*v0y);
-
-/*
-			// on applique k*v0 sur le pt de controle choisi pour trouver les nouvelles coor de P4 (le pt crtl)
-			p5.setCenter(p4.getCenter().x*k*v0x, p4.getCenter().y*k*v0y);
-
-			// on update la curve actuelle avec les nouvelles infos et on la retourne pour affichage
-			((ControlPoint)curve.getShapes().get(controlPointIndex+1)).setCenter(p5.getCenter().x, p5.getCenter().y);
-*/
-		}
-		else if (curvetype == CurvesModel.HERMITE) {
-		}
-		else {
-//				System.out.println("Curve type [" + string + "] is unknown.");
-		}
-
-
+			((ControlPoint)curve.getShapes().get(controlPointIndex+1)).setCenter(p4.getCenter().x+v0x, p4.getCenter().y+v0y);
 		return curve;
-	}
-
-
-	public boolean checkC1Continuity(Curve curve){
-		// C0 et Tangentes égales -> il faut que les points de contact aient une tangente egale
-		//	C1.
-		String curvetype = curve.getCurveType();
-
-		if (curvetype == CurvesModel.BEZIER) {
-//				curve.setCurveType(new BezierCurveType(CurvesModel.BEZIER));
-				/*
-				• 𝑃4 − 𝑃3 = 𝑃6 − 𝑃5
-				• 𝑃3 , 𝑃4 = 𝑃5 et 𝑃6 colinéaires et à même distance
-				 */
-
-//				C1.get
-		}else if (curvetype == CurvesModel.HERMITE) {
-//				curve.setCurveType(new HermiteCurveType(CurvesModel.HERMITE));
-
-
-		}else {
-//				System.out.println("Curve type [" + string + "] is unknown.");
-		}
-
-		return true;
 	}
 
 
@@ -201,10 +176,11 @@ public class Curves extends AbstractTransformer implements DocObserver {
 					System.out.println("Try to apply G1 continuity on control point [" + controlPointIndex + "]");
 					this.curve = checkG1Continuity(this.curve, controlPointIndex);
 					this.curve.recomputeLineSegments();
+
 					//@TODO FAIRE LA CONTINUITE G1 ICI
+					curve = checkG1Continuity(curve, controlPointIndex);
 				}
 			}
-			
 		}
 	}
 	
@@ -218,12 +194,11 @@ public class Curves extends AbstractTransformer implements DocObserver {
 				if (curve.getShapes().contains(s)){
 					int controlPointIndex = curve.getShapes().indexOf(s);
 					System.out.println("Try to apply C1 continuity on control point [" + controlPointIndex + "]");
-				//@TODO FAIRE LA CONTINUITE C1 ICI
 
-
+					//@TODO FAIRE LA CONTINUITE C1 ICI
+					curve = checkC1Continuity(curve, controlPointIndex);
 				}
 			}
-			
 		}
 	}
 
