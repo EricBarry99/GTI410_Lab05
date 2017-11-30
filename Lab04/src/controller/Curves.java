@@ -112,37 +112,12 @@ public class Curves extends AbstractTransformer implements DocObserver {
 			𝑘 > 0
 			𝑃3 , 𝑃4 = 𝑃5 et 𝑃6 colinéaires
 		*/
-
 		// on extrait les points a utiliser
-		ControlPoint p3 = (ControlPoint)curve.getShapes().get(controlPointIndex-1);
-		ControlPoint p4 = (ControlPoint)curve.getShapes().get(controlPointIndex);
-		ControlPoint p5 = (ControlPoint)curve.getShapes().get(controlPointIndex+1);
+		// dans la liste des points, P4 et P5 sont deux points différents; dans les notes du prof c'est le même point (il utilise P6)
+		// -> pt ctrl choisi = P4; P5 prof = P4 Prof = P4 code; P6 Prof = P5 Code
+		int nbCtrlPts = curve.getShapes().size();
+		if(controlPointIndex < nbCtrlPts && nbCtrlPts > 2 && controlPointIndex >= 1){
 
-		// calcul des deltas X et Y
-		int v0y = (p4.getCenter().y - p3.getCenter().y);
-		int v0x = (p4.getCenter().x - p3.getCenter().x);
-
-		int v1y = (p5.getCenter().y - p4.getCenter().y);
-		int v1x = (p5.getCenter().x - p4.getCenter().x);
-
-		// calculs des normes des vecteurs V0 (avant pt selectionne) et v1 (apres pt selectionne)
-		double v0 = Math.sqrt(Math.pow(v0y,2) + Math.pow(v0x,2));
-		double v1 = Math.sqrt(Math.pow(v1y,2) + Math.pow(v1x,2));
-
-		double k = v1/v0;
-		((ControlPoint)curve.getShapes().get(controlPointIndex+1)).setCenter(p4.getCenter().x+k*v0x, p4.getCenter().y+k*v0y);
-
-		return curve;
-	}
-
-
-	public Curve checkC1Continuity(Curve curve, int controlPointIndex){
-			/*
-			// comme G1 mais on enleve le K
-				• 𝑃4 − 𝑃3 = 𝑃6 − 𝑃5
-				• 𝑃3 , 𝑃4 = 𝑃5 et 𝑃6 colinéaires et à même distance
-			*/
-			// on extrait les points a utiliser
 			ControlPoint p3 = (ControlPoint)curve.getShapes().get(controlPointIndex-1);
 			ControlPoint p4 = (ControlPoint)curve.getShapes().get(controlPointIndex);
 			ControlPoint p5 = (ControlPoint)curve.getShapes().get(controlPointIndex+1);
@@ -158,7 +133,54 @@ public class Curves extends AbstractTransformer implements DocObserver {
 			double v0 = Math.sqrt(Math.pow(v0y,2) + Math.pow(v0x,2));
 			double v1 = Math.sqrt(Math.pow(v1y,2) + Math.pow(v1x,2));
 
-			((ControlPoint)curve.getShapes().get(controlPointIndex+1)).setCenter(p4.getCenter().x+v0x, p4.getCenter().y+v0y);
+			double k = v1/v0;
+
+			int newX = p4.getCenter().x + (int) k*v0x;
+			int newY = p4.getCenter().y + (int) k*v0y;
+
+			((ControlPoint)curve.getShapes().get(controlPointIndex+1)).setCenter(newX, newY);
+		}
+		else{
+			System.out.println("no modifications !");
+		}
+		return curve;
+	}
+
+
+	public Curve checkC1Continuity(Curve curve, int controlPointIndex){
+			/*
+			// comme G1 mais on enleve le K
+				• 𝑃4 − 𝑃3 = 𝑃6 − 𝑃5
+				• 𝑃3 , 𝑃4 = 𝑃5 et 𝑃6 colinéaires et à même distance
+			*/
+		int nbCtrlPts = curve.getShapes().size();
+		if(controlPointIndex < nbCtrlPts && nbCtrlPts > 2 && controlPointIndex >= 1){
+			ControlPoint p3 = (ControlPoint)curve.getShapes().get(controlPointIndex-1);
+			ControlPoint p4 = (ControlPoint)curve.getShapes().get(controlPointIndex);
+			ControlPoint p5 = (ControlPoint)curve.getShapes().get(controlPointIndex+1);
+
+			// calcul des deltas X et Y
+			int v0y = (p4.getCenter().y - p3.getCenter().y);
+			int v0x = (p4.getCenter().x - p3.getCenter().x);
+
+			int v1y = (p5.getCenter().y - p4.getCenter().y);
+			int v1x = (p5.getCenter().x - p4.getCenter().x);
+
+			// calculs des normes des vecteurs V0 (avant pt selectionne) et v1 (apres pt selectionne)
+			double v0 = Math.sqrt(Math.pow(v0y,2) + Math.pow(v0x,2));
+			double v1 = Math.sqrt(Math.pow(v1y,2) + Math.pow(v1x,2));
+
+			int newX = p4.getCenter().x+v0x;
+			int newY = p4.getCenter().y+v0y;
+
+			((ControlPoint)curve.getShapes().get(controlPointIndex+1)).setCenter(newX, newY);
+//			((ControlPoint)curve.getShapes().get(controlPointIndex+1)).setCenter(p4.getCenter().x+v0x, p4.getCenter().y+v0y);
+			System.out.println("C1 modified");
+		}
+		else{
+			System.out.println("no modifications !");
+		}
+
 		return curve;
 	}
 
@@ -168,17 +190,12 @@ public class Curves extends AbstractTransformer implements DocObserver {
 			Document doc = Application.getInstance().getActiveDocument();
 			List selectedObjects = doc.getSelectedObjects();
 			if (selectedObjects.size() > 0){
-				// selectedObject est un controlPoint
 				Shape s = (Shape)selectedObjects.get(0);
-				// verification de continuite G0
 				if (curve.getShapes().contains(s)){
 					int controlPointIndex = curve.getShapes().indexOf(s);
-					System.out.println("Try to apply G1 continuity on control point [" + controlPointIndex + "]");
 					this.curve = checkG1Continuity(this.curve, controlPointIndex);
-					this.curve.recomputeLineSegments();
-
-					//@TODO FAIRE LA CONTINUITE G1 ICI
-					curve = checkG1Continuity(curve, controlPointIndex);
+					this.curve.update();
+//					curve = checkG1Continuity(curve, controlPointIndex);
 				}
 			}
 		}
@@ -190,13 +207,10 @@ public class Curves extends AbstractTransformer implements DocObserver {
 			List selectedObjects = doc.getSelectedObjects(); 
 			if (selectedObjects.size() > 0){
 				Shape s = (Shape)selectedObjects.get(0);
-				// verification de continuite C0
 				if (curve.getShapes().contains(s)){
 					int controlPointIndex = curve.getShapes().indexOf(s);
-					System.out.println("Try to apply C1 continuity on control point [" + controlPointIndex + "]");
-
-					//@TODO FAIRE LA CONTINUITE C1 ICI
-					curve = checkC1Continuity(curve, controlPointIndex);
+					this.curve = checkC1Continuity(curve, controlPointIndex);
+					this.curve.update();
 				}
 			}
 		}
