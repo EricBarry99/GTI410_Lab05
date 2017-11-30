@@ -105,7 +105,7 @@ public class Curves extends AbstractTransformer implements DocObserver {
 		}
 	}
 
-	public Curve checkG1Continuity(int controlPointIndex){
+	public void checkG1Continuity(int controlPointIndex){
 		/*
 			p4 = p5
 			𝑃4 − 𝑃3 = 𝑘(𝑃6 − 𝑃5)
@@ -145,11 +145,10 @@ public class Curves extends AbstractTransformer implements DocObserver {
 		else{
 			System.out.println("no modifications !");
 		}
-		return curve;
 	}
 
 
-	public Curve checkC1Continuity(int controlPointIndex){
+	public void checkC1Continuity(int controlPointIndex){
 			/*
 			// comme G1 mais on enleve le K
 				• 𝑃4 − 𝑃3 = 𝑃6 − 𝑃5
@@ -179,12 +178,10 @@ public class Curves extends AbstractTransformer implements DocObserver {
 			int newY = p4.getCenter().y+v0y;
 
 			((ControlPoint)curve.getShapes().get(controlPointIndex+1)).setCenter(newX, newY);
-			System.out.println("C1 modified");
 		}
 		else{
 			System.out.println("no modifications !");
 		}
-		return curve;
 	}
 
 
@@ -196,14 +193,12 @@ public class Curves extends AbstractTransformer implements DocObserver {
 				Shape s = (Shape)selectedObjects.get(0);
 				if (curve.getShapes().contains(s)){
 					int controlPointIndex = curve.getShapes().indexOf(s);
-					curve = checkG1Continuity(controlPointIndex);
-					curve.update();
-//					curve = checkG1Continuity(curve, controlPointIndex);
+					checkG1Continuity(controlPointIndex);
 				}
 			}
 		}
 	}
-	
+
 	public void symetricControlPoint() {
 		if (curve != null) {
 			Document doc = Application.getInstance().getActiveDocument();
@@ -212,8 +207,7 @@ public class Curves extends AbstractTransformer implements DocObserver {
 				Shape s = (Shape)selectedObjects.get(0);
 				if (curve.getShapes().contains(s)){
 					int controlPointIndex = curve.getShapes().indexOf(s);
-					curve = checkC1Continuity(controlPointIndex);
-					curve.update();
+					checkC1Continuity(controlPointIndex);
 				}
 			}
 		}
