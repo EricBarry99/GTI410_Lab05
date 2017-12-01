@@ -35,25 +35,31 @@ public class HermiteCurveType extends CurveType{
         }
 
             /* (non-Javadoc)
-          * @see model.CurveType#getNumberOfSegments(int)
-          */
+      * @see model.CurveType#getNumberOfSegments(int)
+      */
             public int getNumberOfSegments(int numberOfControlPoints) {
-                return numberOfControlPoints - 1;
+                if (numberOfControlPoints >= 4) {
+                    return (numberOfControlPoints - 1) / 3;
+                } else {
+                    return 0;
+                }
             }
 
         /* (non-Javadoc)
          * @see model.CurveType#getNumberOfControlPointsPerSegment()
          */
         public int getNumberOfControlPointsPerSegment() {
-            return 2;
+            return 4;
         }
 
             /* (non-Javadoc)
-         * @see model.CurveType#getControlPoint(int, int)
-         */
-            public ControlPoint getControlPoint(List controlPoints,
-                                                int segmentNumber, int controlPointNumber) {
-                int controlPointIndex = segmentNumber + controlPointNumber;
+       * @see model.CurveType#getControlPoint(java.util.List, int, int)
+       */
+            public ControlPoint getControlPoint(
+                    List controlPoints,
+                    int segmentNumber,
+                    int controlPointNumber) {
+                int controlPointIndex = segmentNumber * 3 + controlPointNumber;
                 return (ControlPoint)controlPoints.get(controlPointIndex);
             }
 
@@ -64,18 +70,23 @@ public class HermiteCurveType extends CurveType{
 
             List tVector = Matrix.buildRowVector4(t*t*t, t*t, t, 1);
 
+            //On calcul les points R1 et R4 respectivement a partir des couples de points p1/p2 et p3/p4
+            Point R1 = new Point((int)((ControlPoint)controlPoints.get(1)).getCenter().getX()-(int)((ControlPoint)controlPoints.get(0)).getCenter().getX(),(int)((ControlPoint)controlPoints.get(1)).getCenter().getY()-(int)((ControlPoint)controlPoints.get(0)).getCenter().getY());
+            Point R4 = new Point((int)((ControlPoint)controlPoints.get(3)).getCenter().getX()-(int)((ControlPoint)controlPoints.get(2)).getCenter().getX(),(int)((ControlPoint)controlPoints.get(3)).getCenter().getY()-(int)((ControlPoint)controlPoints.get(2)).getCenter().getY());
+
+            //On créer le vecteur de points
             List gVector = Matrix.buildColumnVector4(((ControlPoint)controlPoints.get(0)).getCenter(),
-                    ((ControlPoint)controlPoints.get(1)).getCenter(),
-                    ((ControlPoint)controlPoints.get(0)).getCenter(),
-                    ((ControlPoint)controlPoints.get(1)).getCenter());
+                    ((ControlPoint)controlPoints.get(3)).getCenter(),
+                    R1,
+                    R4);
 
 
             Point p = Matrix.eval(tVector, matrix, gVector);
 
-            // derivee de P1 donne R1, derivee de p4 donne R4
             return p;
         }
 
+        //Matrice d'Hermite
         private List hermiteMatrix =
                 Matrix.buildMatrix4(2,  -2, 1, 1,
                         -3, 3,  -2, -1,
