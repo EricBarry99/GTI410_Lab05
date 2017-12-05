@@ -14,13 +14,19 @@
 */
 package controller;
 
+import model.Shape;
+import sun.plugin.javascript.navig.Anchor;
+
+import java.awt.*;
+import java.awt.geom.AffineTransform;
+import java.util.Iterator;
 import java.util.List;
 
 /**
  * <p>Title: RotateCommand</p>
  * <p>Description: </p>
- * <p>Copyright: Copyright (c) 2004 Jean-François Barras, Éric Paquette</p>
- * <p>Company: (ÉTS) - École de Technologie Supérieure</p>
+ * <p>Copyright: Copyright (c) 2004 Jean-Franï¿½ois Barras, ï¿½ric Paquette</p>
+ * <p>Company: (ï¿½TS) - ï¿½cole de Technologie Supï¿½rieure</p>
  * <p>Created on: 2004-03-19</p>
  * @version $Revision: 1.2 $
  */
@@ -45,6 +51,20 @@ public class RotateCommand extends AnchoredTransformationCommand {
 		System.out.println("command: rotate " + thetaDegrees +
                            " degrees around " + getAnchor() + ".");
 
+		Iterator iter = objects.iterator();
+		Shape shape;
+
+		while(iter.hasNext()){
+			shape = (Shape)iter.next();
+			Point anchorPoint =  getAnchorPoint(shape);
+			mt.addMememto(shape);
+			AffineTransform t = shape.getAffineTransform();
+			AffineTransform t2 = new AffineTransform();
+			System.out.println("Anchor points: " + anchorPoint.getX() + " " + anchorPoint.getY() );
+			t2.rotate(thetaDegrees,anchorPoint.getX(),anchorPoint.getY());
+			t.preConcatenate(t2);
+			shape.setAffineTransform(t);
+		}
 		// voluntarily undefined
 	}
 
