@@ -15,7 +15,7 @@
 package controller;
 
 import model.Shape;
-
+import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.util.Iterator;
 import java.util.List;
@@ -49,18 +49,19 @@ public class RotateCommand extends AnchoredTransformationCommand {
 		System.out.println("command: rotate " + thetaDegrees +
                            " degrees around " + getAnchor() + ".");
 
-
 		Iterator iter = objects.iterator();
 		Shape shape;
+
 		while(iter.hasNext()){
 			shape = (Shape)iter.next();
+			Point anchorPoint =  getAnchorPoint(shape);
 			mt.addMememto(shape);
-			AffineTransform ro = shape.getAffineTransform();
-			AffineTransform ro2 = new AffineTransform();
-//			ro2.rotate(thetaDegrees, getAnchorPoint(shape).x, getAnchorPoint(shape).y);
-			ro2.setToRotation(thetaDegrees, getAnchorPoint(shape).x, getAnchorPoint(shape).y);
-			ro.preConcatenate(ro2);
-			shape.setAffineTransform(ro);
+			AffineTransform t = shape.getAffineTransform();
+			AffineTransform t2 = new AffineTransform();
+			System.out.println("Anchor points: " + anchorPoint.getX() + " " + anchorPoint.getY() );
+			t2.rotate(thetaDegrees,anchorPoint.getX(),anchorPoint.getY());
+			t.preConcatenate(t2);
+			shape.setAffineTransform(t);
 		}
 	}
 
