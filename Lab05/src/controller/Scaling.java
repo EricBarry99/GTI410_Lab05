@@ -23,8 +23,8 @@ import view.Application;
 /**
  * <p>Title: Scaling</p>
  * <p>Description: </p>
- * <p>Copyright: Copyright (c) 2004 Sébastien Bois, Eric Paquette</p>
- * <p>Company: (ÉTS) - École de Technologie Supérieure</p>
+ * <p>Copyright: Copyright (c) 2004 Sï¿½bastien Bois, Eric Paquette</p>
+ * <p>Company: (ï¿½TS) - ï¿½cole de Technologie Supï¿½rieure</p>
  * @author unascribed
  * @version $Revision: 1.7 $
  */
@@ -77,7 +77,7 @@ public class Scaling extends AbstractTransformer {
 	
 	/**
 	 * 
-	 * @param s
+	 * @params
 	 */
 	public void setOrientation(int anchor){
 		this.anchor = anchor;

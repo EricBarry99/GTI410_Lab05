@@ -14,27 +14,31 @@
 */
 package controller;
 
+import model.Shape;
+
+import java.awt.geom.AffineTransform;
+import java.util.Iterator;
 import java.util.List;
 
 /**
- * <p>Title: ScaleCommand</p>
+ * <p>Title: RotateCommand</p>
  * <p>Description: </p>
- * <p>Copyright: Copyright (c) 2004 Jean-François Barras, Éric Paquette</p>
- * <p>Company: (ÉTS) - École de Technologie Supérieure</p>
+ * <p>Copyright: Copyright (c) 2004 Jean-Franï¿½ois Barras, ï¿½ric Paquette</p>
+ * <p>Company: (ï¿½TS) - ï¿½cole de Technologie Supï¿½rieure</p>
  * <p>Created on: 2004-03-19</p>
  * @version $Revision: 1.2 $
  */
-public class ScaleCommand extends AnchoredTransformationCommand {
+public class RotateCommand extends AnchoredTransformationCommand {
 
 	/**
-	 * @param sx the multiplier to the horizontal size
-	 * @param sy the multiplier to the vertical size
+	 * @param thetaDegrees the angle of (counter-clockwise) rotation in degrees
 	 * @param anchor one of the predefined positions for the anchor point
 	 */
-	public ScaleCommand(double sx, double sy, int anchor, List aObjects) {
+	public RotateCommand(double thetaDegrees,
+						 int anchor,
+						 List aObjects) {
 		super(anchor);
-		this.sx = sx;
-		this.sy = sy;
+		this.thetaDegrees = thetaDegrees;
 		objects = aObjects;
 	}
 	
@@ -42,10 +46,22 @@ public class ScaleCommand extends AnchoredTransformationCommand {
 	 * @see controller.Command#execute()
 	 */
 	public void execute() {
-		System.out.println("command: scaling x by " + sx +
-                           " and y by " + sy + " ; anchored on " + getAnchor() );
+		System.out.println("command: rotate " + thetaDegrees +
+                           " degrees around " + getAnchor() + ".");
 
-		// voluntarily undefined
+
+		Iterator iter = objects.iterator();
+		Shape shape;
+		while(iter.hasNext()){
+			shape = (Shape)iter.next();
+			mt.addMememto(shape);
+			AffineTransform ro = shape.getAffineTransform();
+			AffineTransform ro2 = new AffineTransform();
+//			ro2.rotate(thetaDegrees, getAnchorPoint(shape).x, getAnchorPoint(shape).y);
+			ro2.setToRotation(thetaDegrees, getAnchorPoint(shape).x, getAnchorPoint(shape).y);
+			ro.preConcatenate(ro2);
+			shape.setAffineTransform(ro);
+		}
 	}
 
 	/* (non-Javadoc)
@@ -57,7 +73,6 @@ public class ScaleCommand extends AnchoredTransformationCommand {
 
 	private MementoTracker mt = new MementoTracker();
 	private List objects;
-	private double sx;
-	private double sy;
-
+	private double thetaDegrees;
+	
 }

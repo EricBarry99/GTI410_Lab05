@@ -14,27 +14,32 @@
 */
 package controller;
 
+import model.Disc;
+import model.Shape;
+
+import java.awt.geom.AffineTransform;
+import java.util.Iterator;
 import java.util.List;
 
 /**
- * <p>Title: RotateCommand</p>
+ * <p>Title: ScaleCommand</p>
  * <p>Description: </p>
- * <p>Copyright: Copyright (c) 2004 Jean-François Barras, Éric Paquette</p>
- * <p>Company: (ÉTS) - École de Technologie Supérieure</p>
+ * <p>Copyright: Copyright (c) 2004 Jean-Franï¿½ois Barras, ï¿½ric Paquette</p>
+ * <p>Company: (ï¿½TS) - ï¿½cole de Technologie Supï¿½rieure</p>
  * <p>Created on: 2004-03-19</p>
  * @version $Revision: 1.2 $
  */
-public class RotateCommand extends AnchoredTransformationCommand {
+public class ScaleCommand extends AnchoredTransformationCommand {
 
 	/**
-	 * @param thetaDegrees the angle of (counter-clockwise) rotation in degrees
+	 * @param sx the multiplier to the horizontal size
+	 * @param sy the multiplier to the vertical size
 	 * @param anchor one of the predefined positions for the anchor point
 	 */
-	public RotateCommand(double thetaDegrees,
-						 int anchor,
-						 List aObjects) {
+	public ScaleCommand(double sx, double sy, int anchor, List aObjects) {
 		super(anchor);
-		this.thetaDegrees = thetaDegrees;
+		this.sx = sx;
+		this.sy = sy;
 		objects = aObjects;
 	}
 	
@@ -42,12 +47,21 @@ public class RotateCommand extends AnchoredTransformationCommand {
 	 * @see controller.Command#execute()
 	 */
 	public void execute() {
-		System.out.println("command: rotate " + thetaDegrees +
-                           " degrees around " + getAnchor() + ".");
+		System.out.println("command: scaling x by " + sx +
+				" and y by " + sy + " ; anchored on " + getAnchor());
 
-		// voluntarily undefined
+		Iterator iter = objects.iterator();
+		Shape shape;
+		while (iter.hasNext()) {
+			shape = (Shape) iter.next();
+			mt.addMememto(shape);
+			AffineTransform sc = shape.getAffineTransform();
+			AffineTransform sc2 = new AffineTransform();
+			sc2.scale(this.sx, this.sy);
+			sc.preConcatenate(sc2);
+			shape.setAffineTransform(sc);
+		}
 	}
-
 	/* (non-Javadoc)
 	 * @see controller.Command#undo()
 	 */
@@ -57,6 +71,6 @@ public class RotateCommand extends AnchoredTransformationCommand {
 
 	private MementoTracker mt = new MementoTracker();
 	private List objects;
-	private double thetaDegrees;
-	
+	private double sx;
+	private double sy;
 }
