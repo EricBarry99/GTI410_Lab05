@@ -17,6 +17,7 @@ package controller;
 import model.Disc;
 import model.Shape;
 
+import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.util.Iterator;
 import java.util.List;
@@ -52,14 +53,19 @@ public class ScaleCommand extends AnchoredTransformationCommand {
 
 		Iterator iter = objects.iterator();
 		Shape shape;
+
 		while (iter.hasNext()) {
 			shape = (Shape) iter.next();
+
 			mt.addMememto(shape);
+			Point anchorPoint =  getAnchorPoint(shape);
 			AffineTransform sc = shape.getAffineTransform();
 			AffineTransform sc2 = new AffineTransform();
 			sc2.scale(this.sx, this.sy);
+			sc2.translate(anchorPoint.x, anchorPoint.y);
 			sc.preConcatenate(sc2);
 			shape.setAffineTransform(sc);
+
 		}
 	}
 	/* (non-Javadoc)
