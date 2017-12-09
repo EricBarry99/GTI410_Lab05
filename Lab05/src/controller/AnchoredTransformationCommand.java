@@ -20,8 +20,8 @@ import model.Shape;
 /**
  * <p>Title: AnchoredTransformationCommand</p>
  * <p>Description: </p>
- * <p>Copyright: Copyright (c) 2004 Jean-François Barras, Éric Paquette</p>
- * <p>Company: (ÉTS) - École de Technologie Supérieure</p>
+ * <p>Copyright: Copyright (c) 2004 Jean-Franï¿½ois Barras, ï¿½ric Paquette</p>
+ * <p>Company: (ï¿½TS) - ï¿½cole de Technologie Supï¿½rieure</p>
  * <p>Created on: 2004-03-19</p>
  * @version $Revision: 1.4 $
  */
@@ -71,8 +71,49 @@ public abstract class AnchoredTransformationCommand extends Command {
 		return new Point(x,y);
 	}
 
+	protected Point getAnchorPosition(Shape s) {
+		java.awt.Rectangle r = s.getTransformedRectangle();
+		int x, y;
+		if (anchor == TOP_LEFT || anchor == MIDDLE_LEFT || anchor == BOTTOM_LEFT) {
+			x = (int)r.getMinX();
+		} else if (anchor == TOP_CENTER || anchor == CENTER || anchor == BOTTOM_CENTER) {
+			x = (int)r.getCenterX();
+		} else {
+			x = (int)r.getMaxX();
+		}
+		if (anchor == TOP_LEFT || anchor == TOP_CENTER || anchor == TOP_RIGHT) {
+			y = (int)r.getMinY();
+		} else if (anchor == MIDDLE_LEFT || anchor == CENTER || anchor == MIDDLE_RIGHT) {
+			y = (int)r.getCenterY();
+		} else {
+			y = (int)r.getMaxY();
+		}
+		return new Point(x,y);
+	}
+
 	private final int anchor;
 	
 	protected int getAnchor() { return anchor; }
+/*
+	public Point getAnchorPosition(Shape shape){
 
+		java.awt.Rectangle r = .getRectangle();
+		int x, y;
+		if (anchor == TOP_LEFT || anchor == MIDDLE_LEFT || anchor == BOTTOM_LEFT) {
+			x = (int)r.getMinX();
+		} else if (anchor == TOP_CENTER || anchor == CENTER || anchor == BOTTOM_CENTER) {
+			x = (int)r.getCenterX();
+		} else {
+			x = (int)r.getMaxX();
+		}
+		if (anchor == TOP_LEFT || anchor == TOP_CENTER || anchor == TOP_RIGHT) {
+			y = (int)r.getMinY();
+		} else if (anchor == MIDDLE_LEFT || anchor == CENTER || anchor == MIDDLE_RIGHT) {
+			y = (int)r.getCenterY();
+		} else {
+			y = (int)r.getMaxY();
+		}
+		return new Point(x,y);
+	}
+	*/
 }
