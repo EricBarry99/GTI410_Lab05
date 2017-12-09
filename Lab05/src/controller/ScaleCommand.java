@@ -65,7 +65,6 @@ public class ScaleCommand extends AnchoredTransformationCommand {
 
 			// on va chercher la position initiale de l'ancre
 			Point initAnchor = getAnchorPosition(shape);
-			System.out.println("init anchor position:" + "("+initAnchor.x+","+initAnchor.y+")");
 
 			// on fais le changement de scale
 			sc2.scale(this.sx, this.sy);
@@ -78,39 +77,18 @@ public class ScaleCommand extends AnchoredTransformationCommand {
 			AffineTransform tt = shape.getAffineTransform();
 			AffineTransform tt2 = new AffineTransform();
 
+			// on prend la nouvelle position du point d'ancrage
 			Point newAnchor = getAnchorPosition(shape);
 
 			// on fais la difference entre les positions de la nouvele et de l'ancienne ancre pour trouver la variation de position
 			int diffX = newAnchor.x - initAnchor.x;
 			int diffY = newAnchor.y - initAnchor.y;
 
-			System.out.println("New anchor:" + "("+newAnchor.x+","+newAnchor.y+")");
-			System.out.println("diff:" + "("+diffX+","+diffY+")");
-
 			// on déplace la figure pour quelle retourne a sa place originale
 			tt2.translate(-diffX, -diffY);
-//			tt2.translate(-diffX, -diffY);
-
-			Point lastAnchor = getAnchorPosition(shape);
-			System.out.println("last anchor:" + "("+lastAnchor.x+","+lastAnchor.y+")");
 
 			tt.preConcatenate(tt2);
 			shape.setAffineTransform(tt);
-
-
-
-/*
-			shape = (Shape) iter.next();
-			mt.addMememto(shape);
-			AffineTransform sc = shape.getAffineTransform();
-			AffineTransform sc2 = new AffineTransform();
-
-			sc2.scale(this.sx, this.sy);
-			sc2.translate(-getAnchorPoint(shape).x, -getAnchorPoint(shape).y);
-
-			sc.preConcatenate(sc2);
-			shape.setAffineTransform(sc);
-*/
 		}
 	}
 	/* (non-Javadoc)
